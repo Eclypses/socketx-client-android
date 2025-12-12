@@ -32,14 +32,14 @@ Any response from the destination service travels the same path in reverse: the 
     **Kotlin DSL (`build.gradle.kts`):**
     ```kotlin
     dependencies {
-        implementation("com.eclypses:socketx-client-android:1.0.2")
+        implementation("com.eclypses:socketx-client-android:1.0.3")
     }
     ```
 
     **Groovy DSL (`build.gradle`):**
     ```groovy
     dependencies {
-        implementation 'com.eclypses:socketx-client-android:1.0.2'
+        implementation 'com.eclypses:socketx-client-android:1.0.3'
     }
     ```
 
