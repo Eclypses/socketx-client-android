@@ -34,8 +34,6 @@ android {
         jvmTarget = "1.8"
     }
 
-    // The modern way to declare what to publish.
-    // This automatically handles task dependencies for sources and javadocs.
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -45,17 +43,23 @@ android {
 }
 
 group = "com.eclypses"
-version = "1.0.2"
+version = "1.0.3"
 
 afterEvaluate {
     publishing {
+        repositories {
+            maven {
+                name = "localDirectory"
+                url = uri(layout.buildDirectory.dir("repo"))
+            }
+        }
         publications {
             create<MavenPublication>("release") {
-                groupId = project.group.toString()
-                artifactId = project.name
-                version = project.version.toString()
-
                 from(components["release"])
+
+                groupId = project.group.toString()
+                artifactId = "socketx-client-android"
+                version = project.version.toString()
 
                 pom {
                     name.set("SocketX Client for Android")
@@ -82,17 +86,8 @@ afterEvaluate {
                 }
             }
         }
-        repositories {
-            maven {
-                name = "MavenCentral"
-                url = uri("https://central.sonatype.com/api/v1/publisher")
-                credentials {
-                    username = project.findProperty("ossrhUsername") as String? ?: ""
-                    password = project.findProperty("ossrhPassword") as String? ?: ""
-                }
-            }
-        }
     }
+
     signing {
         useGpgCmd()
         sign(publishing.publications["release"])
