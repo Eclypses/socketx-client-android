@@ -49,12 +49,8 @@ afterEvaluate {
     publishing {
         repositories {
             maven {
-                name = "mavenCentral"
-                url = uri("https://central.sonatype.com/api/v1/publisher")
-                credentials {
-                    username = project.findProperty("mavenCentralUsername") as String? ?: ""
-                    password = project.findProperty("mavenCentralPassword") as String? ?: ""
-                }
+                name = "localDirectory"
+                url = uri(layout.buildDirectory.dir("repo"))
             }
         }
         publications {
