@@ -43,7 +43,7 @@ android {
 }
 
 group = "com.eclypses"
-version = "1.0.3"
+version = "1.0.4"
 
 afterEvaluate {
     publishing {
@@ -95,7 +95,7 @@ afterEvaluate {
 }
 
 dependencies {
-    implementation("com.eclypses:eclypses-aws-mte-relay-client-android-release:4.2.3")
+    api("com.eclypses:eclypses-aws-mte-relay-client-android-release:4.2.3")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

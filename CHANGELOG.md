@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2025-12-11
+
+### Added
+
+### Changed
+- Changed MteRelay dependency from `implementation` to `api` to expose it to consumer apps.
+    
+### Fixed
+- Fixed `NoClassDefFoundError` crash at runtime for MteBase.
+
+[1.0.4]: https://github.com/Eclypses/socketx-client-android/releases/tag/1.0.4
+
 ## [1.0.3] - 2025-12-11
 
 ### Added
