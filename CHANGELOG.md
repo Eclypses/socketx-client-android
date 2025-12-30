@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.7] - 2025-12-30
+
+### Added
+- 
+
+### Changed
+- Edited README to provide more accurate integration guidelines
+
+### Fixed
+- 
+
+
 ## [1.0.6] - 2025-12-29
 
 ### Added
@@ -70,3 +82,5 @@ Updated build.gradle to add javadocs to the bundle
 
 
 [1.0.6]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.6
+
+[1.0.7]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.7

@@ -15,181 +15,223 @@ This package provides the Eclypses SocketX Mobile Client Library for Android and
 - Protect sensitive data with MTE encryption.
 
 ## Overview
-The SocketX Mobile Client establishes a secure, persistent WebSocket connection to your SocketX Server, creating an encrypted tunnel for your application's data.
+The SocketX Mobile Client acts as a secure wrapper around the standard [OkHttp](https://square.github.io/okhttp/) WebSocket implementation. It establishes a secure, persistent WebSocket connection to your SocketX Server, automatically handling the MTE handshake and encryption/decryption of data.
 
-The data flow for an outgoing message is as follows:
+From your application's perspective, you interact with it just like a standard OkHttp WebSocket, but the data transmitted over the wire is protected.
 
-1. The SocketX client in your app takes the data payload (e.g., a JSON object) and encodes it using MTE.
-2. It sends the encoded payload over the WebSocket connection to the SocketX Server.
-3. The server decodes the payload to retrieve the original data.
-4. The server then forwards this original data to the final destination service or API.
+## Implementation Checklist
+Before integrating the SocketX Mobile Client, ensure your project meets the following requirements:
 
-Any response from the destination service travels the same path in reverse: the server encodes the response and sends it back through the WebSocket, where the client decodes it before delivering it to your application.
+- [ ] **SocketX Server:** You have the URL of a running SocketX Server instance.
+- [ ] **Android Permissions:** Your application has the `android.permission.INTERNET` permission declared in `AndroidManifest.xml`.
+- [ ] **OkHttp Client:** Your application uses `OkHttpClient` for network requests.
+- [ ] **WebSocketListener:** You are familiar with implementing `okhttp3.WebSocketListener` to handle socket events.
 
-## Adding the SocketX Mobile Client to Your Application
-1.  Add the dependency to your app-level `build.gradle.kts` (Kotlin) or `build.gradle` (Groovy) file:
+## Installation
+Add the dependency to your app-level build file.
 
-    **Kotlin DSL (`build.gradle.kts`):**
-    ```kotlin
-    dependencies {
-        implementation("com.eclypses:socketx-client-android:1.0.6")
-    }
-    ```
+**Kotlin DSL (`build.gradle.kts`):**
+```kotlin
+dependencies {
+    implementation("com.eclypses:socketx-client-android:1.0.7")
+    // Ensure OkHttp is also available if not already included
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+}
+```
 
-    **Groovy DSL (`build.gradle`):**
-    ```groovy
-    dependencies {
-        implementation 'com.eclypses:socketx-client-android:1.0.6'
-    }
-    ```
-
-2. Set up the corresponding SocketX Server to receive requests from your application, where they will be decoded and relayed to the original destination API.
-
-## Table of Contents
-- [Getting Started](#getting-started)
-- [Contact Eclypses](#contact-eclypses)
+**Groovy DSL (`build.gradle`):**
+```groovy
+dependencies {
+    implementation 'com.eclypses:socketx-client-android:1.0.7'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+}
+```
 
 ## Getting Started
-The minimal setup consists of configuring the SocketX Server URL and updating your Android application to use the `SocketXClient`. The `SocketXClient` is a wrapper around `OkHttp`'s `WebSocketListener`, so similar functionality is available.
 
-- Confirm that you have the SocketX Server URL available to instantiate the `SocketXClient`.
-- In your application where you make WebSocket calls:
-    - Import `com.eclypses.socketx_client_android.SocketXClient`
-    - Create a `SocketXClient` instance.
+The `SocketXClient` class functions as a factory for creating secure WebSockets. It wraps your existing `OkHttpClient` and provides a `newWebSocket` method that mirrors the standard OkHttp API.
+
+### 1. Initialize OkHttpClient
+Ensure you have an `OkHttpClient` instance configured. You can share this instance across your app.
+
+### 2. Initialize SocketXClient
+Create an instance of `SocketXClient` by passing your `OkHttpClient`. This step initializes the MTE license.
+
+### 3. Create a Request and Listener
+Prepare your `Request` (with the server URL) and your `WebSocketListener` (to handle callbacks).
+
+### 4. Connect
+Call `socketXClient.newWebSocket(request, listener)`. This initiates the connection and the automatic MTE handshake.
+
+> **Note:** The `onOpen` callback in your listener will effectively be delayed until the secure MTE handshake is successfully completed.
 
 ### Kotlin Example
-Your class interacting with `SocketXClient` must contain these elements:
 
 ```kotlin
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import okhttp3.Response
+import okio.ByteString
+import okio.ByteString.Companion.toByteString
 import com.eclypses.socketx_client_android.SocketXClient
 import com.eclypses.socketx_client_android.SocketXError
 
-class YourClass {
-
-    private var socketXClient: SocketXClient? = null
-    var isConnected: Boolean = false
+class WebSocketManager {
+    private val client = OkHttpClient()
+    private var webSocket: WebSocket? = null
 
     fun connect(url: String) {
         try {
-            socketXClient = SocketXClient(url)
-            isConnected = true
-        } catch (e: Exception) {
-            // Handle error appropriately
-            isConnected = false
-            return
-        }
+            // 1. Create the SocketXClient factory
+            val socketX = SocketXClient(client)
 
-        socketXClient?.onMessageReceived = { text ->
-            // Handle response text as you wish
-        }
-        socketXClient?.onBinaryReceived = { data ->
-            // Handle response binary (ByteArray) as you wish
-        }
-        socketXClient?.onError = { error ->
-            when (error) {
-                is SocketXError.CodecError -> {
-                    // Handle error appropriately
+            // 2. Define the Request
+            val request = Request.Builder()
+                .url(url)
+                .build()
+
+            // 3. Define the Listener
+            val listener = object : WebSocketListener() {
+                override fun onOpen(webSocket: WebSocket, response: Response) {
+                    println("Secure connection established and handshake complete!")
+                    webSocket.send("Hello, Secure World!")
                 }
-                is SocketXError.NetworkError -> {
-                    // Handle error appropriately
+
+                override fun onMessage(webSocket: WebSocket, text: String) {
+                    println("Received encrypted message (decrypted): $text")
                 }
-                else -> {
-                    // Handle error appropriately
+
+                override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+                    println("Received binary message: ${bytes.hex()}")
+                }
+
+                override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                    println("Error: ${t.message}")
+                    if (t is SocketXError) {
+                        // Handle specific SocketX errors (Handshake, MTE, etc.)
+                    }
                 }
             }
-            isConnected = false
+
+            // 4. Create the secure WebSocket
+            webSocket = socketX.newWebSocket(request, listener)
+
+        } catch (e: Exception) {
+            // Handle initialization errors (e.g., MTE license issues)
+            e.printStackTrace()
         }
-        socketXClient?.onConnected = {
-            isConnected = true
-        }
-        socketXClient?.connect()
     }
 
-    // Also available are these standard socket functions ...
-
-    fun sendText(text: String) {
-        socketXClient?.send(text)
+    fun sendMessage(text: String) {
+        webSocket?.send(text)
     }
 
     fun sendBinary(data: ByteArray) {
-        socketXClient?.send(data)
+        webSocket?.send(data.toByteString())
     }
 
-    fun disconnect() {
-        socketXClient?.disconnect()
+    fun close() {
+        webSocket?.close(1000, "Goodbye")
     }
 }
 ```
 
 ### Java Example
-Your class interacting with `SocketXClient` must contain these elements:
 
 ```java
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+import okhttp3.Response;
+import okio.ByteString;
 import com.eclypses.socketx_client_android.SocketXClient;
 import com.eclypses.socketx_client_android.SocketXError;
 
-public class YourClass {
-
-    private SocketXClient socketXClient;
-    private boolean isConnected = false;
+public class WebSocketManager {
+    private final OkHttpClient client = new OkHttpClient();
+    private WebSocket webSocket;
 
     public void connect(String url) {
         try {
-            socketXClient = new SocketXClient(url);
-            isConnected = true;
+            // 1. Create the SocketXClient factory
+            SocketXClient socketX = new SocketXClient(client);
+
+            // 2. Define the Request
+            Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+            // 3. Define the Listener
+            WebSocketListener listener = new WebSocketListener() {
+                @Override
+                public void onOpen(WebSocket webSocket, Response response) {
+                    System.out.println("Secure connection established and handshake complete!");
+                    webSocket.send("Hello, Secure World!");
+                }
+
+                @Override
+                public void onMessage(WebSocket webSocket, String text) {
+                    System.out.println("Received encrypted message (decrypted): " + text);
+                }
+
+                @Override
+                public void onMessage(WebSocket webSocket, ByteString bytes) {
+                    System.out.println("Received binary message: " + bytes.hex());
+                }
+
+                @Override
+                public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                    System.out.println("Error: " + t.getMessage());
+                    if (t instanceof SocketXError) {
+                         // Handle specific SocketX errors
+                    }
+                }
+            };
+
+            // 4. Create the secure WebSocket
+            webSocket = socketX.newWebSocket(request, listener);
+
         } catch (Exception e) {
-            // Handle error appropriately
-            isConnected = false;
-            return;
+            // Handle initialization errors (e.g., MTE license issues)
+            e.printStackTrace();
         }
-
-        socketXClient.setOnMessageReceived(text -> {
-            // Handle response text as you wish
-        });
-
-        socketXClient.setOnBinaryReceived(data -> {
-            // Handle response binary (byte[]) as you wish
-        });
-
-        socketXClient.setOnError(error -> {
-            if (error instanceof SocketXError.CodecError) {
-                // Handle CodecError
-            } else if (error instanceof SocketXError.NetworkError) {
-                // Handle NetworkError
-            } else {
-                // Handle other errors
-            }
-            isConnected = false;
-        });
-
-        socketXClient.setOnConnected(() -> {
-            isConnected = true;
-        });
-
-        socketXClient.connect();
     }
 
-    // Also available are these standard socket functions ...
-
-    public void sendText(String text) {
-        if (socketXClient != null) {
-            socketXClient.send(text);
+    public void sendMessage(String text) {
+        if (webSocket != null) {
+            webSocket.send(text);
         }
     }
 
     public void sendBinary(byte[] data) {
-        if (socketXClient != null) {
-            socketXClient.send(data);
+        if (webSocket != null) {
+            webSocket.send(ByteString.of(data));
         }
     }
 
-    public void disconnect() {
-        if (socketXClient != null) {
-            socketXClient.disconnect();
+    public void close() {
+        if (webSocket != null) {
+            webSocket.close(1000, "Goodbye");
         }
     }
 }
 ```
+
+## Troubleshooting
+
+### MTE License Errors
+If the MTE license check fails, the `SocketXClient` constructor will throw a `SocketXError.InternalError`. Ensure you catch exceptions when initializing the client.
+
+### Connection Issues
+Errors occurring during the connection or handshake process are delivered to the `onFailure` method of your `WebSocketListener`. The `Throwable` passed to `onFailure` may be a `SocketXError` containing details about handshake or codec failures.
+
+### Common Errors
+- **NetworkError:** Issues with the underlying network connection or socket.
+- **HandshakeError:** Failure to complete the MTE handshake with the server.
+- **CodecError:** Issues encoding or decoding MTE messages.
 
 ## Contact Eclypses
 
