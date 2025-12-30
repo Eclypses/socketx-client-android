@@ -12,14 +12,21 @@ internal class HandshakeManager(
     // The captureRoomPath function is now in a companion object, making it a static-like method.
     companion object {
         fun captureRoomPath(urlString: String): Pair<String, String> {
-            val basePath = "/ws"
-            val wsRange = urlString.indexOf(basePath)
-            if (wsRange == -1) {
+            val schemeSeparator = "://"
+            val schemeIndex = urlString.indexOf(schemeSeparator)
+            if (schemeIndex == -1) {
                 return Pair(urlString, "")
             }
-            val afterWsIndex = wsRange + basePath.length
-            val roomPath = if (afterWsIndex < urlString.length) urlString.substring(afterWsIndex) else ""
-            return Pair(urlString.substring(0, afterWsIndex), roomPath)
+
+            val pathStartIndex = urlString.indexOf('/', startIndex = schemeIndex + schemeSeparator.length)
+
+            if (pathStartIndex == -1) {
+                return Pair(urlString, "")
+            }
+
+            val baseUrl = urlString.substring(0, pathStartIndex)
+            val roomPath = urlString.substring(pathStartIndex)
+            return Pair(baseUrl, roomPath)
         }
     }
 
