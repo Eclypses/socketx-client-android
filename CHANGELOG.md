@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- 
+
+### Changed
+- Edited README to provide more accurate integration guidelines
+
+### Fixed
+- 
+
+
 ## [1.0.6] - 2025-12-29
 
 ### Added
