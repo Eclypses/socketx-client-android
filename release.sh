@@ -46,6 +46,16 @@ sed -i '' "s/implementation 'com.eclypses:socketx-client-android:.*'/implementat
 SEARCH="## \[Unreleased\]"
 REPLACE="## [Unreleased]\\
 \\
+### Added\\
+-\\
+\\
+### Changed\\
+-\\
+\\
+### Fixed\\
+-\\
+\\
+\\
 ## [$CLEAN_VERSION] - $DATE"
 
 sed -i '' "s/$SEARCH/$REPLACE/" "$CHANGELOG_PATH"
