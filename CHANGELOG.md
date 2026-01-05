@@ -119,3 +119,5 @@ Updated build.gradle to add javadocs to the bundle
 [2.0.8]: https://github.com/Eclypses/socketx-client-android/releases/tag/v2.0.8
 
 [1.0.8]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.8
+
+[1.0.8]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.8
