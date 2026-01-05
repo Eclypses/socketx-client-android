@@ -75,7 +75,7 @@ git add "$SETTINGS_PATH" "$BUILD_GRADLE_PATH" "$CHANGELOG_PATH" "$README_PATH"
 git commit -m "chore: bump version to $CLEAN_VERSION"
 
 echo "🏷️  Tagging version $TAG_VERSION..."
-git tag "$TAG_VERSION"
+git tag -a "$TAG_VERSION" -m "Release $CLEAN_VERSION"
 
 echo "✅ Done! Validate the changes, then run:"
 echo "   git push && git push --tags"
