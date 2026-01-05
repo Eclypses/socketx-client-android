@@ -33,6 +33,8 @@ steps:
     Contents: |
       .gitignore
       **/*.yml
+      dev_docs
+      release.sh
 
 - script: |
     git add .
