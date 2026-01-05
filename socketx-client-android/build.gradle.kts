@@ -43,7 +43,7 @@ android {
 }
 
 group = "com.eclypses"
-version = "2.0.8"
+version = "1.0.8"
 
 afterEvaluate {
     publishing {
