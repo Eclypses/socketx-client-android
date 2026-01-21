@@ -78,4 +78,4 @@ echo "🏷️  Tagging version $TAG_VERSION..."
 git tag -a "$TAG_VERSION" -m "Release $CLEAN_VERSION"
 
 echo "✅ Done! Validate the changes, then run:"
-echo "   git push && git push --tags"
+echo "   git push origin develop && git push origin $TAG_VERSION"
