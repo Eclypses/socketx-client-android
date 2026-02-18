@@ -1,10 +1,19 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("jacoco")
     id("maven-publish")
     id("signing")
     id("org.jetbrains.dokka") version "1.9.20"
 }
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+val minLineCoverage: BigDecimal =
+    (findProperty("minLineCoverage") as String?)?.toBigDecimalOrNull()
+        ?: "0.40".toBigDecimal()
 
 android {
     namespace = "com.eclypses.socketx_client_android"
@@ -32,6 +41,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
     }
 
     publishing {
@@ -101,6 +116,78 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*"
+    )
+
+    val debugTreeJava = fileTree("${layout.buildDirectory.get().asFile}/intermediates/javac/debug/classes") {
+        exclude(fileFilter)
+    }
+    val debugTreeKotlin = fileTree("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+
+    classDirectories.setFrom(files(debugTreeJava, debugTreeKotlin))
+    sourceDirectories.setFrom(files("src/main/java"))
+    executionData.setFrom(
+        files(
+            "${layout.buildDirectory.get().asFile}/jacoco/testDebugUnitTest.exec"
+        )
+    )
+}
+
+tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+    dependsOn("jacocoTestReport")
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*"
+    )
+
+    val debugTreeJava = fileTree("${layout.buildDirectory.get().asFile}/intermediates/javac/debug/classes") {
+        exclude(fileFilter)
+    }
+    val debugTreeKotlin = fileTree("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+
+    classDirectories.setFrom(files(debugTreeJava, debugTreeKotlin))
+    sourceDirectories.setFrom(files("src/main/java"))
+    executionData.setFrom(
+        files(
+            "${layout.buildDirectory.get().asFile}/jacoco/testDebugUnitTest.exec"
+        )
+    )
+
+    violationRules {
+        rule {
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = minLineCoverage
+            }
+        }
+    }
 }
