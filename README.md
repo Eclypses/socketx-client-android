@@ -72,7 +72,7 @@ Add the dependency to your app-level `build.gradle` or `build.gradle.kts` file:
 **Kotlin DSL (`build.gradle.kts`):**
 ```kotlin
 dependencies {
-    implementation("com.eclypses:socketx-client-android:1.0.9")
+    implementation("com.eclypses:socketx-client-android:1.2.0")
     // OkHttp is also required
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
@@ -81,7 +81,7 @@ dependencies {
 **Groovy DSL (`build.gradle`):**
 ```groovy
 dependencies {
-    implementation 'com.eclypses:socketx-client-android:1.0.9'
+    implementation 'com.eclypses:socketx-client-android:1.2.0'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
 ```

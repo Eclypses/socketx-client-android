@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+-
+
+### Changed
+-
+
+### Fixed
+-
+
+
+## [1.2.0] - 2026-02-18
+
+### Added
 - Added baseline layered unit test architecture (infrastructure fakes, fixtures, protocol/model/bridge/facade test suites).
 - Added testing documentation in `dev_docs/TESTING_SUMMARY.md` and updated `dev_docs/LIBRARY_CONTEXT.md` with test architecture details.
 - Added JaCoCo coverage reporting (`jacocoTestReport`) with XML/HTML outputs.
@@ -144,3 +156,5 @@ Updated build.gradle to add javadocs to the bundle
 [1.0.9]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.9
 
 [1.0.9]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.9
+
+[1.2.0]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.0
