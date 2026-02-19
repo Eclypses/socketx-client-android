@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+-
+
+### Changed
+-
+
+### Fixed
+-
+
+
+## [1.2.4] - 2026-02-19
+
+### Added
 - Added Azure pipeline pre-step to resolve Android SDK path and generate `local.properties` during CI runs.
 
 ### Changed
@@ -200,3 +212,5 @@ Updated build.gradle to add javadocs to the bundle
 [1.2.2]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.2
 
 [1.2.3]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.3
+
+[1.2.4]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.4
