@@ -1,6 +1,5 @@
 package com.eclypses.socketx_client_android
 
-import android.util.Log
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -14,17 +13,17 @@ internal open class MteInternalWebSocketListener(
     lateinit var secureWebSocket: MteSecureWebSocket
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        Log.d("MteListener", "onOpen received, starting handshake.")
+        InternalLog.d("MteListener", "onOpen received, starting handshake.")
         handshakeManager.startHandshake()
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        Log.d("MteListener", "onMessage (binary) received, passing to HandshakeManager.")
+        InternalLog.d("MteListener", "onMessage (binary) received, passing to HandshakeManager.")
         handshakeManager.processIncomingData(bytes.toByteArray())
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
-        Log.w("MteListener", "onMessage (text) received unexpectedly. Passing to HandshakeManager.")
+        InternalLog.w("MteListener", "onMessage (text) received unexpectedly. Passing to HandshakeManager.")
         handshakeManager.processUnexpectedTextMessage()
     }
 

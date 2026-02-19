@@ -1,7 +1,5 @@
 package com.eclypses.socketx_client_android
 
-import android.util.Log
-
 /**
  * Action byte values used internally for SocketXClient messages.
  * (6th byte in the 7-byte header)
@@ -49,19 +47,19 @@ object Header {
     fun unwrap(data: ByteArray): UnwrappedHeader? {
         val headerSize = PROTOCOL_HEADER.size + 3
         if (data.size < headerSize) {
-            Log.e("Header", "Malformed packet: too small. Size: ${data.size}")
+            InternalLog.e("Header", "Malformed packet: too small. Size: ${data.size}")
             return null
         }
 
         val receivedProto = data.sliceArray(0 until PROTOCOL_HEADER.size)
         if (!receivedProto.contentEquals(PROTOCOL_HEADER)) {
-            Log.e("Header", "Malformed packet: protocol header mismatch.")
+            InternalLog.e("Header", "Malformed packet: protocol header mismatch.")
             return null
         }
 
         val receivedVersion = data[PROTOCOL_HEADER.size]
         if (receivedVersion != VERSION) {
-            Log.e("Header", "Version mismatch: got $receivedVersion, expected $VERSION")
+            InternalLog.e("Header", "Version mismatch: got $receivedVersion, expected $VERSION")
             // The Manager is responsible for reporting this as a specific SocketXError
             return null
         }

@@ -14,6 +14,72 @@ All notable changes to this project will be documented in this file.
 -
 
 
+## [1.2.4] - 2026-02-19
+
+### Added
+- Added Azure pipeline pre-step to resolve Android SDK path and generate `local.properties` during CI runs.
+
+### Changed
+- Added `androidSdkDirectory` pipeline variable as fallback when `ANDROID_HOME`/`ANDROID_SDK_ROOT` are not pre-set on the agent.
+
+### Fixed
+- Fixed CI lint/unit-test startup failure caused by missing Android SDK location configuration on self-hosted macOS agent.
+
+
+## [1.2.3] - 2026-02-19
+
+### Added
+-
+
+### Changed
+- Version 1.2.2 didn't actually change the pool. It is changed now.
+
+### Fixed
+-
+
+
+## [1.2.2] - 2026-02-19
+
+### Added
+-
+
+### Changed
+- Switched azure-pipelines pool back to MaOS - Intel box
+
+### Fixed
+-
+
+
+## [1.2.1] - 2026-02-19
+
+### Added
+-
+
+### Changed
+- Switched azure-pipelines pool to linux box
+
+### Fixed
+-
+
+
+## [1.2.0] - 2026-02-18
+
+### Added
+- Added baseline layered unit test architecture (infrastructure fakes, fixtures, protocol/model/bridge/facade test suites).
+- Added testing documentation in `dev_docs/TESTING_SUMMARY.md` and updated `dev_docs/LIBRARY_CONTEXT.md` with test architecture details.
+- Added JaCoCo coverage reporting (`jacocoTestReport`) with XML/HTML outputs.
+
+### Changed
+- Updated unit test stack to JUnit5 + `kotlinx-coroutines-test` and configured Gradle to use JUnit Platform.
+- Added configurable coverage threshold verification task (`jacocoTestCoverageVerification`) with `-PminLineCoverage` support (default `0.40`).
+- Updated Azure Pipelines to run on `develop` and `master`; run coverage generation/verification and publish coverage only on `develop`.
+- Updated `release.sh` to align with iOS-style safety preflight checks (branch/clean tree/tag checks), then simplified remote sync checks for squash-merge workflow.
+
+### Fixed
+- Fixed JVM unit-test stability issues caused by direct Android logging calls by introducing `InternalLog` wrapper usage.
+- Fixed legacy URL path test expectations to match current `captureRoomPath` behavior.
+
+
 ## [1.0.9] - 2026-01-20
 
 ### Added
@@ -138,3 +204,13 @@ Updated build.gradle to add javadocs to the bundle
 [1.0.9]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.9
 
 [1.0.9]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.9
+
+[1.2.0]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.0
+
+[1.2.1]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.1
+
+[1.2.2]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.2
+
+[1.2.3]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.3
+
+[1.2.4]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.4

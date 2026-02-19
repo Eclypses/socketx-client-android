@@ -1,6 +1,5 @@
 package com.eclypses.socketx_client_android
 
-import android.util.Log
 import com.eclypses.mte.MteBase
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -33,12 +32,12 @@ class SocketXClient(
     init {
         if (!MteBase.initLicense(Settings.licCompanyName, Settings.licCompanyKey)) {
             val error = "MTE License Check failed. Please provide a valid license."
-            Log.e("SocketXClient", error)
+            InternalLog.e("SocketXClient", error)
             val socketXError = SocketXError.InternalError(error)
             onGlobalError?.invoke(socketXError)
             throw socketXError
         }
-        Log.d("SocketXClient", "Using SocketXClient Version ${Settings.socketXClientVersion} and MTE Version ${MteBase.getVersion()}")
+        InternalLog.d("SocketXClient", "Using SocketXClient Version ${Settings.socketXClientVersion} and MTE Version ${MteBase.getVersion()}")
     }
 
     /**

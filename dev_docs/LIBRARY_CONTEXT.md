@@ -37,7 +37,7 @@ The library uses a **Factory** and **Decorator** pattern to inject security into
 *   **Responsibility**:
     *   **State Management**: Tracks the connection state (Unpaired -> Handshaking -> Paired).
     *   **Protocol Handling**: Interprets the custom 7-byte SocketX header.
-    *   **Crypto Operations**: Delegates encoding/decoding to `MteCodec`.
+    *   **Crypto Operations**: Delegates encoding/decoding to a codec engine (`MteCodecEngine` in production).
     *   **Routing**: Dispatches decrypted messages to the user's listener or internal handlers.
 
 ### D. `MteInternalWebSocketListener`
@@ -74,10 +74,40 @@ The library uses a **Factory** and **Decorator** pattern to inject security into
 *   **`MteSecureWebSocket.kt`**: The secure socket implementation (Decorator).
 *   **`HandshakeManager.kt`**: Internal logic for handshake state and message routing.
 *   **`Header.kt`**: Definition of the custom binary protocol header.
-*   **`SocketXError.kt`**: Sealed class defining specific error types (Handshake, Crypto, Network).
-*   **`Settings.kt`**: Library configuration (Versions, License Keys).
+*   **`SocketXError.kt`**: Sealed class defining specific error types.
+*   **`Settings.kt`**: Library configuration (versions, license keys).
 
 ## 6. Configuration
 Configuration is minimal and primarily handled during initialization:
 *   **`Settings.kt`**: Hardcoded license keys (in this version) and version strings.
 *   **`SocketXClient`**: Accepts an `OkHttpClient` to allow the app to configure timeouts, interceptors, and DNS.
+
+## 7. Testing Architecture (Baseline)
+
+The project now has a layered, deterministic unit-test structure under `src/test/java/com/eclypses/socketx_client_android`:
+
+* **Infrastructure fakes**
+    * `infrastructure/FakeSocketClient.kt` provides controllable failure toggles, call counters, argument capture, operation history, send history, event simulation helpers, and lifecycle helpers (`reset`, `dispose`).
+    * `infrastructure/FakeCodecEngine.kt` enables deterministic handshake/encoding tests without requiring native crypto behavior.
+* **Central fixtures**
+    * `fixtures/TestFixtures.kt` centralizes endpoints, headers, payloads, and error fixtures.
+* **Layered suites**
+    * `model/ErrorAndModelTests.kt`
+    * `protocol/HeaderContractTests.kt`
+    * `bridge/HandshakeAndListenerBridgeTests.kt`
+    * `facade/MteSecureWebSocketFacadeTests.kt`
+    * `facade/PublicApiFacadeTests.kt`
+
+## 8. Test Tooling
+
+* JUnit5 is enabled for unit tests (`useJUnitPlatform()` in module Gradle config).
+* `kotlinx-coroutines-test` is included for deterministic async test behavior.
+* Existing baseline tests were migrated to JUnit5.
+
+## 9. CI Validation
+
+`azure-pipelines.yml` now includes a lint + unit test step:
+
+* `./gradlew :socketx-client-android:lint :socketx-client-android:testDebugUnitTest`
+
+See `dev_docs/TESTING_SUMMARY.md` for test commands, patterns, and current pass status.
