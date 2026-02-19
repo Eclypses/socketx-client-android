@@ -7,13 +7,32 @@ trigger:
         - master
         
 variables:
-    packageName: 'socketx-client-android'
-    packageDirectory: '$(Build.Repository.LocalPath)'
+  packageName: 'socketx-client-android'
+  packageDirectory: '$(Build.Repository.LocalPath)'
+  androidSdkDirectory: '/Users/eclypsesaccount/Library/Android/sdk'
 
 
 pool: 'MacOS - Intel'
 
 steps:
+
+- script: |
+    set -euo pipefail
+
+    SDK_DIR="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$(androidSdkDirectory)}}"
+
+    if [ -z "$SDK_DIR" ] || [ ! -d "$SDK_DIR" ]; then
+      echo "Android SDK directory not found. Checked: '$SDK_DIR'"
+      echo "Set ANDROID_HOME/ANDROID_SDK_ROOT on the agent, or update 'androidSdkDirectory' in azure-pipelines.yml."
+      exit 1
+    fi
+
+    echo "Using Android SDK at: $SDK_DIR"
+    echo "##vso[task.setvariable variable=ANDROID_HOME]$SDK_DIR"
+    echo "##vso[task.setvariable variable=ANDROID_SDK_ROOT]$SDK_DIR"
+    echo "sdk.dir=$SDK_DIR" > local.properties
+  displayName: 'Resolve Android SDK and create local.properties'
+  condition: succeeded()
 
 - script: |
     ./gradlew :socketx-client-android:lint :socketx-client-android:testDebugUnitTest

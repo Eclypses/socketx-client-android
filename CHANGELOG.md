@@ -5,13 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
--
+- Added Azure pipeline pre-step to resolve Android SDK path and generate `local.properties` during CI runs.
 
 ### Changed
--
+- Added `androidSdkDirectory` pipeline variable as fallback when `ANDROID_HOME`/`ANDROID_SDK_ROOT` are not pre-set on the agent.
 
 ### Fixed
--
+- Fixed CI lint/unit-test startup failure caused by missing Android SDK location configuration on self-hosted macOS agent.
 
 
 ## [1.2.3] - 2026-02-19
