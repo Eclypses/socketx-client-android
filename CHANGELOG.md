@@ -5,13 +5,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
--
+- Added baseline layered unit test architecture (infrastructure fakes, fixtures, protocol/model/bridge/facade test suites).
+- Added testing documentation in `dev_docs/TESTING_SUMMARY.md` and updated `dev_docs/LIBRARY_CONTEXT.md` with test architecture details.
+- Added JaCoCo coverage reporting (`jacocoTestReport`) with XML/HTML outputs.
 
 ### Changed
--
+- Updated unit test stack to JUnit5 + `kotlinx-coroutines-test` and configured Gradle to use JUnit Platform.
+- Added configurable coverage threshold verification task (`jacocoTestCoverageVerification`) with `-PminLineCoverage` support (default `0.40`).
+- Updated Azure Pipelines to run on `develop` and `master`; run coverage generation/verification and publish coverage only on `develop`.
+- Updated `release.sh` to align with iOS-style safety preflight checks (branch/clean tree/tag checks), then simplified remote sync checks for squash-merge workflow.
 
 ### Fixed
--
+- Fixed JVM unit-test stability issues caused by direct Android logging calls by introducing `InternalLog` wrapper usage.
+- Fixed legacy URL path test expectations to match current `captureRoomPath` behavior.
 
 
 ## [1.0.9] - 2026-01-20
