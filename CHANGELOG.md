@@ -8,6 +8,18 @@ All notable changes to this project will be documented in this file.
 -
 
 ### Changed
+-
+
+### Fixed
+-
+
+
+## [1.2.3] - 2026-02-19
+
+### Added
+-
+
+### Changed
 - Version 1.2.2 didn't actually change the pool. It is changed now.
 
 ### Fixed
@@ -186,3 +198,5 @@ Updated build.gradle to add javadocs to the bundle
 [1.2.1]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.1
 
 [1.2.2]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.2
+
+[1.2.3]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.3
