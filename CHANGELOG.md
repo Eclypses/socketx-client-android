@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 -
 
 ### Changed
--
+- Switched azure-pipelines pool back to MaOS - Intel box
 
 ### Fixed
 -
