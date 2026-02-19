@@ -8,6 +8,18 @@ All notable changes to this project will be documented in this file.
 -
 
 ### Changed
+-
+
+### Fixed
+-
+
+
+## [1.2.1] - 2026-02-19
+
+### Added
+-
+
+### Changed
 - Switched azure-pipelines pool to linux box
 
 ### Fixed
@@ -158,3 +170,5 @@ Updated build.gradle to add javadocs to the bundle
 [1.0.9]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.0.9
 
 [1.2.0]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.0
+
+[1.2.1]: https://github.com/Eclypses/socketx-client-android/releases/tag/v1.2.1
