@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 -
 
 ### Changed
--
+- Version 1.2.2 didn't actually change the pool. It is changed now.
 
 ### Fixed
 -

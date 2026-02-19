@@ -11,7 +11,7 @@ variables:
     packageDirectory: '$(Build.Repository.LocalPath)'
 
 
-pool: 'Linux x86 64bit'
+pool: 'MacOS - Intel'
 
 steps:
 
