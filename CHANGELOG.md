@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 -
 
 ### Changed
--
+- Switched azure-pipelines pool to linux box
 
 ### Fixed
 -
